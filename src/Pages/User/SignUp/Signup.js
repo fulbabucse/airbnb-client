@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -6,6 +6,7 @@ import PrimaryButton from "../../../Components/Button/PrimaryButton";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
 const Signup = () => {
+  const [error, setError] = useState("");
   const { createUser, updateUserProfile, verifyEmail, loading, setLoading } =
     useContext(AuthContext);
   const {
@@ -37,7 +38,19 @@ const Signup = () => {
               .catch((err) => console.error(err));
             console.log(result.user);
           })
-          .catch((err) => console.error(err));
+          .catch((err) => {
+            setLoading(false);
+            if (
+              err.message === "Firebase: Error (auth/email-already-in-use)."
+            ) {
+              setError("This Email already used");
+            } else if (
+              err.message ===
+              "Firebase: Password should be at least 6 characters (auth/weak-password)."
+            ) {
+              setError("Password should be at least 6 characters");
+            }
+          });
       })
       .catch((err) => console.error(err));
   };
@@ -124,7 +137,7 @@ const Signup = () => {
                   },
                   minLength: {
                     value: 6,
-                    message: "Password length should be 8 character",
+                    message: "Password length should be 6 character",
                   },
                 })}
                 id="password"
@@ -137,6 +150,7 @@ const Signup = () => {
                 </p>
               )}
             </div>
+            <p className="text-red-400 font-semibold text-sm">{error}</p>
           </div>
           <div className="mt-4">
             <PrimaryButton

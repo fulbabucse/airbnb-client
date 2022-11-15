@@ -1,11 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
+import SmallSpinner from "../../../Components/Spinner/SmallSpinner";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
 const Login = () => {
-  const { signIn } = useContext(AuthContext);
+  const [error, setError] = useState("");
+  const { signIn, signInWithGoogle, loading, setLoading } =
+    useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -13,9 +17,26 @@ const Login = () => {
   } = useForm();
 
   const handleSignIn = (data) => {
+    setError("");
     signIn(data.email, data.password)
       .then((res) => {
         console.log(res.user);
+      })
+      .catch((err) => {
+        setLoading(false);
+        if (err.message === "Firebase: Error (auth/user-not-found).") {
+          setError("User not found");
+        } else if (err.message === "Firebase: Error (auth/wrong-password).") {
+          setError("You are entering the wrong password");
+        }
+      });
+  };
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then((result) => {
+        console.log(result.user);
+        toast.success("successfully google sign in");
       })
       .catch((err) => console.error(err));
   };
@@ -72,6 +93,7 @@ const Login = () => {
                   {errors?.password?.message}
                 </p>
               )}
+              <p className="text-red-400 font-semibold text-sm">{error}</p>
             </div>
           </div>
 
@@ -80,7 +102,7 @@ const Login = () => {
               type="submit"
               classes="w-full px-8 py-3 font-semibold rounded-md bg-gray-900 hover:bg-gray-700 hover:text-white text-gray-100"
             >
-              Sign in
+              {loading ? <SmallSpinner></SmallSpinner> : "Sign in"}
             </PrimaryButton>
           </div>
         </form>
@@ -97,7 +119,11 @@ const Login = () => {
           <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
         </div>
         <div className="flex justify-center space-x-4">
-          <button aria-label="Log in with Google" className="p-3 rounded-sm">
+          <button
+            onClick={handleGoogleSignIn}
+            aria-label="Log in with Google"
+            className="p-3 rounded-sm"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 32 32"
