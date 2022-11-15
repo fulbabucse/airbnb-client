@@ -1,9 +1,46 @@
-import React from "react";
-
+import React, { useContext } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const Signup = () => {
+  const { createUser, updateUserProfile, verifyEmail, loading, setLoading } =
+    useContext(AuthContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const handleSignUp = (userData) => {
+    const formData = new FormData();
+    formData.append("image", userData.image[0]);
+
+    const url = `https://api.imgbb.com/1/upload?key=58298ae343d385bbe171ee4d8ac9424e`;
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        createUser(userData.email, userData.password)
+          .then((result) => {
+            updateUserProfile(userData.name, data.data.display_url)
+              .then(() => {
+                verifyEmail()
+                  .then(() => {
+                    toast.success("Verify to check your inbox");
+                  })
+                  .catch((err) => console.error(err));
+              })
+              .catch((err) => console.error(err));
+            console.log(result.user);
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch((err) => console.error(err));
+  };
   return (
     <div className="flex justify-center items-center pt-8">
       <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900">
@@ -12,24 +49,27 @@ const Signup = () => {
           <p className="text-sm text-gray-400">Create a new account</p>
         </div>
         <form
-          noValidate=""
-          action=""
-          className="space-y-12 ng-untouched ng-pristine ng-valid"
+          onSubmit={handleSubmit(handleSignUp)}
+          className="ng-untouched ng-pristine ng-valid"
         >
-          <div className="space-y-4">
+          <div className="space-y-2">
             <div>
               <label htmlFor="email" className="block mb-2 text-sm">
                 Name
               </label>
               <input
                 type="text"
-                name="name"
+                {...register("name", { required: "Name is required" })}
                 id="name"
-                required
                 placeholder="Enter Your Name Here"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-primaryColor bg-gray-200 text-gray-900"
                 data-temp-mail-org="0"
               />
+              {errors.name && (
+                <p className="text-red-400 font-semibold text-sm">
+                  {errors?.name?.message}
+                </p>
+              )}
             </div>
             <div>
               <label htmlFor="image" className="block mb-2 text-sm">
@@ -38,24 +78,34 @@ const Signup = () => {
               <input
                 type="file"
                 id="image"
-                name="image"
+                {...register("image", { required: "Image is required" })}
                 accept="image/*"
-                required
               />
+              {errors.image && (
+                <p className="text-red-400 font-semibold text-sm">
+                  {errors?.image?.message}
+                </p>
+              )}
             </div>
             <div>
               <label htmlFor="email" className="block mb-2 text-sm">
                 Email address
               </label>
               <input
-                required
                 type="email"
-                name="email"
+                {...register("email", {
+                  required: "Email address is required",
+                })}
                 id="email"
                 placeholder="Enter Your Email Here"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-primaryColor bg-gray-200 text-gray-900"
                 data-temp-mail-org="0"
               />
+              {errors.email && (
+                <p className="text-red-400 font-semibold text-sm">
+                  {errors?.email?.message}
+                </p>
+              )}
             </div>
             <div>
               <div className="flex justify-between mb-2">
@@ -65,23 +115,36 @@ const Signup = () => {
               </div>
               <input
                 type="password"
-                name="password"
+                {...register("password", {
+                  required: "Password is required",
+
+                  pattern: {
+                    value: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])/,
+                    message: `At least 1 special character, 1 uppercase letter, and Number character make the password stronger`,
+                  },
+                  minLength: {
+                    value: 6,
+                    message: "Password length should be 8 character",
+                  },
+                })}
                 id="password"
-                required
                 placeholder="*******"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 focus:outline-primaryColor text-gray-900"
               />
+              {errors.password && (
+                <p className="text-red-400 font-semibold text-sm">
+                  {errors?.password?.message}
+                </p>
+              )}
             </div>
           </div>
-          <div className="space-y-2">
-            <div>
-              <PrimaryButton
-                type="submit"
-                classes="w-full px-8 py-3 font-semibold rounded-md bg-gray-900 hover:bg-gray-700 hover:text-white text-gray-100"
-              >
-                Sign up
-              </PrimaryButton>
-            </div>
+          <div className="mt-4">
+            <PrimaryButton
+              type="submit"
+              classes="w-full px-8 py-3 font-semibold rounded-md bg-gray-900 hover:bg-gray-700 hover:text-white text-gray-100"
+            >
+              Sign up
+            </PrimaryButton>
           </div>
         </form>
         <div className="flex items-center pt-4 space-x-1">

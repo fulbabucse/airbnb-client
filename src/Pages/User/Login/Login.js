@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
+import { AuthContext } from "../../../contexts/AuthProvider";
 
 const Login = () => {
+  const { signIn } = useContext(AuthContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const handleSignIn = (data) => {
+    signIn(data.email, data.password)
+      .then((res) => {
+        console.log(res.user);
+      })
+      .catch((err) => console.error(err));
+  };
+
   return (
     <div className="flex justify-center items-center pt-8">
       <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900">
@@ -13,24 +30,29 @@ const Login = () => {
           </p>
         </div>
         <form
-          noValidate=""
-          action=""
-          className="space-y-6 ng-untouched ng-pristine ng-valid"
+          onSubmit={handleSubmit(handleSignIn)}
+          className="ng-untouched ng-pristine ng-valid"
         >
-          <div className="space-y-4">
+          <div className="space-y-2">
             <div>
               <label htmlFor="email" className="block mb-2 text-sm">
                 Email address
               </label>
               <input
                 type="email"
-                name="email"
+                {...register("email", {
+                  required: "Email address is required",
+                })}
                 id="email"
-                required
                 placeholder="Enter Your Email Here"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-primaryColor bg-gray-200 text-gray-900"
                 data-temp-mail-org="0"
               />
+              {errors.email && (
+                <p className="text-red-400 font-semibold text-sm">
+                  {errors?.email?.message}
+                </p>
+              )}
             </div>
             <div>
               <div className="flex justify-between">
@@ -40,16 +62,20 @@ const Login = () => {
               </div>
               <input
                 type="password"
-                name="password"
+                {...register("password", { required: "Password is required" })}
                 id="password"
-                required
                 placeholder="*******"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-primaryColor bg-gray-200 text-gray-900"
               />
+              {errors.password && (
+                <p className="text-red-400 font-semibold text-sm">
+                  {errors?.password?.message}
+                </p>
+              )}
             </div>
           </div>
 
-          <div>
+          <div className="mt-2">
             <PrimaryButton
               type="submit"
               classes="w-full px-8 py-3 font-semibold rounded-md bg-gray-900 hover:bg-gray-700 hover:text-white text-gray-100"
