@@ -1,15 +1,19 @@
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
 import SmallSpinner from "../../../Components/Spinner/SmallSpinner";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
 const Login = () => {
   const [error, setError] = useState("");
-  const { signIn, signInWithGoogle, loading, setLoading } =
+  const [email, setEmail] = useState("");
+  const { signIn, signInWithGoogle, loading, setLoading, resetPassword } =
     useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const {
     register,
     handleSubmit,
@@ -19,8 +23,9 @@ const Login = () => {
   const handleSignIn = (data) => {
     setError("");
     signIn(data.email, data.password)
-      .then((res) => {
-        console.log(res.user);
+      .then(() => {
+        navigate(from, { replace: true });
+        toast.success("Successfully User Sign in");
       })
       .catch((err) => {
         setLoading(false);
@@ -34,11 +39,27 @@ const Login = () => {
 
   const handleGoogleSignIn = () => {
     signInWithGoogle()
-      .then((result) => {
-        console.log(result.user);
+      .then(() => {
+        navigate(from, { replace: true });
         toast.success("successfully google sign in");
       })
       .catch((err) => console.error(err));
+  };
+
+  const handleResetPassword = () => {
+    console.log(email);
+    if (!email) {
+      toast.error("Please enter email address");
+    }
+    resetPassword(email)
+      .then(() => {
+        toast.success("Check your inbox or spam for Reset link");
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   };
 
   return (
@@ -64,6 +85,7 @@ const Login = () => {
                 {...register("email", {
                   required: "Email address is required",
                 })}
+                onBlur={(e) => setEmail(e.target.value)}
                 id="email"
                 placeholder="Enter Your Email Here"
                 className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-primaryColor bg-gray-200 text-gray-900"
@@ -107,7 +129,10 @@ const Login = () => {
           </div>
         </form>
         <div className="space-y-1">
-          <button className="text-xs hover:underline text-gray-400">
+          <button
+            onClick={handleResetPassword}
+            className="text-xs hover:underline text-gray-400"
+          >
             Forgot password?
           </button>
         </div>
