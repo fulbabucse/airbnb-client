@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
 import SmallSpinner from "../../../Components/Spinner/SmallSpinner";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import useToken from "../../../hooks/useToken";
 
 const Login = () => {
   const [error, setError] = useState("");
@@ -14,17 +15,23 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+  const [currentUser, setCurrentUser] = useState("");
+  const [token] = useToken(currentUser);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  if (token) {
+    navigate(from, { replace: true });
+  }
+
   const handleSignIn = (data) => {
     setError("");
     signIn(data.email, data.password)
-      .then(() => {
-        navigate(from, { replace: true });
+      .then((res) => {
+        setCurrentUser(res.user);
         toast.success("Successfully User Sign in");
       })
       .catch((err) => {
