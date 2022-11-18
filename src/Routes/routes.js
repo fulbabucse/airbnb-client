@@ -2,6 +2,7 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Root from "../Layout/Root";
 import Home from "../Pages/Home/Home/Home";
+import Checkout from "../Pages/Shared/Checkout/Checkout";
 import ComingExp from "../Pages/Shared/ComingExp/ComingExp";
 import ErrorPage from "../Pages/Shared/ErrorPage/ErrorPage";
 import HomeDetails from "../Pages/Shared/HomeDetails/HomeDetails";
@@ -9,6 +10,7 @@ import SearchResult from "../Pages/Shared/SearchResult/SearchResult";
 
 import Login from "../Pages/User/Login/Login";
 import Signup from "../Pages/User/SignUp/Signup";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
       {
         path: "search-result",
         element: <SearchResult></SearchResult>,
+      },
+      {
+        path: "checkout",
+        element: (
+          <PrivateRoute>
+            <Checkout></Checkout>
+          </PrivateRoute>
+        ),
       },
     ],
   },

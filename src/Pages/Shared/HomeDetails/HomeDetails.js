@@ -8,6 +8,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/solid";
 import React from "react";
+import { Link } from "react-router-dom";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
 
 const HomeDetails = () => {
@@ -41,7 +42,7 @@ const HomeDetails = () => {
         <div className="flex-1 max-w-lg">
           <div className="flex justify-between">
             <div>
-              <h2 className="text-gray-900 title-font text-lg font-medium">
+              <h2 className="text-gray-800 title-font text-lg font-medium">
                 Huge Apartment with 4 bedrooms
               </h2>
               <br />
@@ -104,7 +105,7 @@ const HomeDetails = () => {
                 <UserIcon />
               </div>
               <div className="flex-grow prose sm:text-left prose-md">
-                <p className="text-gray-500 text-xl">Atik is a Super host</p>
+                <p className="text-gray-500 text-xl">Fahim is a Super host</p>
                 <p className="text-gray-400">
                   Super hosts are experienced, highly rated hosts who are
                   committed to providing great stays for guests.
@@ -141,9 +142,9 @@ const HomeDetails = () => {
           </div>
           <br />
           <div>
-            <p className="text-xl text-gray-900">Reviews</p>
+            <p className="text-xl text-gray-800">Reviews</p>
             <div className="flex gap-1 mb-2">
-              <StarIcon className="h4 w-4 text-green-500" />{" "}
+              <StarIcon className="h4 w-4 text-primaryColor" />{" "}
               <span>4.8 (10 reviews)</span>
             </div>
           </div>
@@ -151,11 +152,11 @@ const HomeDetails = () => {
 
         {/* Cart */}
         <div className="p-4 md:w-1/2 lg:w-1/3 w-full h-full rounded shadow-lg">
-          <h1 className="text-gray-900 text-3xl title-font font-medium mb-2">
-            $35/ <span className="font-thin">night</span>
+          <h1 className="text-gray-800 text-3xl title-font font-medium mb-2">
+            $35/ <span className="font-thin">Night</span>
           </h1>
           <div className="flex gap-1 mb-2">
-            <StarIcon className="h4 w-4 text-green-500" />{" "}
+            <StarIcon className="h4 w-4 text-primaryColor" />{" "}
             <span>4.8 (10 reviews)</span>
           </div>
 
@@ -170,27 +171,29 @@ const HomeDetails = () => {
 
           <div className="flex border-t border-gray-200 py-2">
             <span className="text-gray-500">$34 x {totalNights} nights</span>
-            <span className="ml-auto text-gray-900">${sub_total}</span>
+            <span className="ml-auto text-gray-800">${sub_total}</span>
           </div>
           <div className="flex border-t border-gray-200 py-2">
             <span className="text-gray-500">Cleaning Fee</span>
-            <span className="ml-auto text-gray-900">$10</span>
+            <span className="ml-auto text-gray-800">$10</span>
           </div>
           <div className="flex border-t border-gray-200 py-2">
             <span className="text-gray-500">Service Fee</span>
-            <span className="ml-auto text-gray-900">$21</span>
+            <span className="ml-auto text-gray-800">$21</span>
           </div>
           <div className="flex border-t border-b mb-6 border-gray-200 py-2">
-            <span className="text-gray-900 font-bold">Total</span>
-            <span className="ml-auto text-gray-900">${total}</span>
+            <span className="text-gray-800 font-bold">Total</span>
+            <span className="ml-auto text-gray-800">${total}</span>
           </div>
           <div className="mt-6 mb-2">
-            <PrimaryButton
-              type="submit"
-              classes="w-full px-4 py-2 tracking-wide transition-colors duration-300 transform rounded-md"
-            >
-              Reserve
-            </PrimaryButton>
+            <Link to="/checkout">
+              <PrimaryButton
+                type="submit"
+                classes="w-full px-4 py-2 tracking-wide transition-colors duration-300 transform rounded-md"
+              >
+                Reserve
+              </PrimaryButton>
+            </Link>
           </div>
           <p className="text-center text-gray-400 mb-6">
             You won't be charged yet!
