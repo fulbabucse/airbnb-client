@@ -15,7 +15,9 @@ const Navbar = () => {
           to="/"
           className="flex title-font font-medium items-center text-transparent text-primaryColor mb-4 md:mb-0"
         >
-          <span className="ml-3 text-2xl font-bold ">Airbnb</span>
+          <span className="ml-3 text-2xl font-bold text-primaryColor">
+            Airbnb
+          </span>
         </Link>
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
           {user?.email ? (

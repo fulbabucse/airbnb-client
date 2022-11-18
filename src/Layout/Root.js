@@ -4,7 +4,7 @@ import Navbar from "../Pages/Shared/Navbar/Navbar";
 
 const Root = () => {
   return (
-    <div className="h-screen">
+    <div>
       <Navbar></Navbar>
       <Outlet></Outlet>
     </div>

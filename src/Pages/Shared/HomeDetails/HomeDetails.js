@@ -10,7 +10,7 @@ import {
 import React from "react";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
 
-const Details = () => {
+const HomeDetails = () => {
   let totalNights = 0;
   let sub_total = 0;
   let total = 0;
@@ -201,4 +201,4 @@ const Details = () => {
   );
 };
 
-export default Details;
+export default HomeDetails;
