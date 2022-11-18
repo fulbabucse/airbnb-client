@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { StarIcon } from "@heroicons/react/24/solid";
 const ExperiencesCard = ({ experience }) => {
   const { image, location, price, rating, title } = experience;
-  console.log(experience);
+
   return (
     <div className="w-full shadow-md hover:shadow-xl transition-shadow duration-150 cursor-pointer">
       <Link
