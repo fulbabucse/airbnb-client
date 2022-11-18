@@ -1,10 +1,11 @@
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PrimaryButton from "../../../Components/Button/PrimaryButton";
 import SmallSpinner from "../../../Components/Spinner/SmallSpinner";
 import { AuthContext } from "../../../contexts/AuthProvider";
+import useToken from "../../../hooks/useToken";
 
 const Signup = () => {
   const [error, setError] = useState("");
@@ -15,6 +16,16 @@ const Signup = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+  const [currentUser, setCurrentUser] = useState("");
+  const [token] = useToken(currentUser);
+
+  if (token) {
+    navigate(from, { replace: true });
+  }
+
   const handleSignUp = (userData) => {
     const formData = new FormData();
     formData.append("image", userData.image[0]);
@@ -28,16 +39,17 @@ const Signup = () => {
       .then((data) => {
         createUser(userData.email, userData.password)
           .then((result) => {
+            setCurrentUser(result.user);
             updateUserProfile(userData.name, data.data.display_url)
               .then(() => {
                 verifyEmail()
                   .then(() => {
+                    setLoading(false);
                     toast.success("Verify to check your inbox");
                   })
                   .catch((err) => console.error(err));
               })
               .catch((err) => console.error(err));
-            console.log(result.user);
           })
           .catch((err) => {
             setLoading(false);
